@@ -1,16 +1,15 @@
 import random
-import machine
+import gene
 import level
 
 
 random.seed()
 
-gene = bytes([random.getrandbits(8) for x in range(64)])
 main_level = level.generate(7)
-
-print("LEVEL")
+print("~~~~LEVEL~~~~")
 level.print_level(main_level)
+print("~~~~~~~~~~~~~")
 print()
 
-print("INTERPRET & RUN")
-print(machine.run(machine.interpret(gene), main_level))
+pool = gene.generate_pool()
+pool_with_fitness = gene.process_pool(pool, main_level)
