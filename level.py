@@ -5,7 +5,7 @@ def generate(size: int):
     """Generate a new level"""
 
     return tuple(
-        tuple(1 if random.randrange(10) < 1 else 0 for x in range(size))
+        tuple(1 if random.randrange(100) < 20 else 0 for x in range(size))
         for x in range(size))
 
 

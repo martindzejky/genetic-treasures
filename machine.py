@@ -50,7 +50,8 @@ def run(sequence: tuple, level: tuple, start: tuple = (0, 0)):
     """Run the sequence on a map"""
 
     pos = start
-    fitness = 0
+    fitness = 1000
+    treasures = set()
 
     for dir in sequence:
         if dir == "H":
@@ -63,12 +64,12 @@ def run(sequence: tuple, level: tuple, start: tuple = (0, 0)):
             pos = (pos[0] - 1, pos[1])
 
         if pos[0] < 0 or pos[0] >= len(level) or pos[1] < 0 or pos[1] >= len(level):
-            print("Moved out of the level!")
             break
         else:
             if level[pos[1]][pos[0]] > 0:
-                print("OMG treasure!!!")
-                fitness += 1000
+                if pos not in treasures:
+                    fitness += 1000
+                    treasures.add(pos)
 
         fitness -= 1
 
