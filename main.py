@@ -11,12 +11,9 @@ start_time = time.time()
 main_level = level.generate(10)
 pool = gene.process_pool(gene.generate_pool(), main_level)
 
-print("iteration => average fitness:")
 evolve_cycles = 256
 for i in range(evolve_cycles):
     pool = gene.process_pool(gene.generate_new_pool(pool), main_level)
-    if i % 64 == 0:
-        print(i, "=>")
 
 max_fitness = 0
 gene = None
