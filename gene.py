@@ -43,9 +43,13 @@ def cross_parents(pool, fitness_sum, mutation_chance=5):
     parent1 = list(select_parent(pool, fitness_sum))
     parent2 = list(select_parent(pool, fitness_sum))
 
-    # TODO: make 2 children
     # TODO: mutate just bits
-    return parent1
+    child1 = list(parent1)
+    child2 = list(parent2)
+    for i in range(random.randrange(len(child1))):
+        child1[i], child2[i] = child2[i], child1[i]
+
+    return child1, child2
 
 
 def generate_new_pool(pool):
@@ -53,5 +57,7 @@ def generate_new_pool(pool):
 
     pool_list = list(pool)
     fitness_sum = reduce(lambda x, y: x + y, map(lambda x: x[1], pool_list))
-    for i in range(len(pool_list)):
-        yield cross_parents(pool_list, fitness_sum)
+    for i in range(round(len(pool_list) / 2)):
+        child1, child2 = cross_parents(pool_list, fitness_sum)
+        yield child1
+        yield child2
