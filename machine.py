@@ -1,11 +1,14 @@
 def ones(num: int):
-    """Get all one bits from a number"""
+    """Count the number of 1 bits in a number"""
 
     bit = 1
+    count = 0
     while num >= bit:
         if num & bit:
-            yield bit
+            count += 1
         bit <<= 1
+
+    return count
 
 
 def interpret(gene: bytes, max_iterations: int = 500):
@@ -28,7 +31,7 @@ def interpret(gene: bytes, max_iterations: int = 500):
         elif instruction == 2:
             i = rest
         elif instruction == 3:
-            ones_number = len(list(ones(byte)))
+            ones_number = ones(byte)
             if ones_number <= 2:
                 result.append("H")
             elif ones_number <= 4:
