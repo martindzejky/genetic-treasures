@@ -4,9 +4,10 @@ import random
 def generate(size: int):
     """Generate a new level"""
 
-    return tuple(
-        tuple(1 if random.randrange(100) < 20 else 0 for x in range(size))
-        for x in range(size))
+    return list(list(1
+                     if random.randrange(100) < 20
+                     else 0 for x in range(size))
+                for x in range(size))
 
 
 def print_level(level: tuple):

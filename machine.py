@@ -1,4 +1,4 @@
-def ones(num: int):
+def ones(num):
     """Count the number of 1 bits in a number"""
 
     bit = 1
@@ -11,12 +11,11 @@ def ones(num: int):
     return count
 
 
-def interpret(gene: bytes, max_iterations: int = 500):
+def interpret(gene, max_iterations=500):
     """Interpret the gene in the virtual machine
        and return moving directions"""
 
-    memory = bytearray(gene)
-    result = []
+    memory = list(gene)
     i, iter = 0, 0
 
     while True:
@@ -32,28 +31,26 @@ def interpret(gene: bytes, max_iterations: int = 500):
             i = rest
         elif instruction == 3:
             ones_number = ones(byte)
-            if ones_number <= 2:
-                result.append("H")
-            elif ones_number <= 4:
-                result.append("D")
+            if ones_number < 2:
+                yield "H"
+            elif ones_number < 4:
+                yield "D"
             elif ones_number <= 6:
-                result.append("P")
+                yield "P"
             else:
-                result.append("L")
+                yield "L"
 
-        i = 0 if i >= len(gene) - 1 else i + 1
+        i = 0 if i >= len(memory) - 1 else i + 1
         iter += 1
         if iter >= max_iterations:
             break
 
-    return tuple(result)
 
-
-def run(sequence: tuple, level: tuple, start: tuple = (0, 0)):
+def run(sequence, level, start=(0, 0)):
     """Run the sequence on a map"""
 
     pos = start
-    fitness = 1
+    fitness = 501
     treasures = set()
 
     for dir in sequence:
@@ -66,14 +63,15 @@ def run(sequence: tuple, level: tuple, start: tuple = (0, 0)):
         else:
             pos = (pos[0] - 1, pos[1])
 
-        fitness = max(1, fitness - 1)
+        fitness -= 1
 
-        if pos[0] < 0 or pos[0] >= len(level) or pos[1] < 0 or pos[1] >= len(level):
+        if (pos[0] < 0 or pos[0] >= len(level) or
+                pos[1] < 0 or pos[1] >= len(level)):
             break
         else:
             if level[pos[1]][pos[0]] > 0:
                 if pos not in treasures:
-                    fitness += 100
+                    fitness += 1000
                     treasures.add(pos)
 
     return fitness
