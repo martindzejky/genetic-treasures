@@ -6,24 +6,20 @@ import machine
 def generate(size=64):
     """Generate a random gene"""
 
-    random_part = random.randrange(size / 4)
-    for i in range(size):
-        if i < random_part:
-            yield random.randrange(256)
-        else:
-            yield 0
+    return [random.randrange(255) for x in range(size)]
 
 
 def generate_pool(size=64):
     """Generate a pool of genes"""
 
-    return (list(generate()) for x in range(size))
+    return [generate() for x in range(size)]
 
 
 def process_pool(pool, level):
     """Calculate fitness for each gene in the pool"""
 
-    return map(lambda x: (x, machine.run(machine.interpret(x), level)), pool)
+    return list(map(
+        lambda x: (x, machine.run(machine.interpret(x), level)), pool))
 
 
 def select_parent(pool, fitness_sum):
@@ -37,11 +33,11 @@ def select_parent(pool, fitness_sum):
             return gene_fitness[0]
 
 
-def cross_parents(pool, fitness_sum, mutation_chance=5):
+def cross_parents(pool, fitness_sum, mutation_chance=2):
     """Select 2 parents according to their fitness"""
 
-    parent1 = list(select_parent(pool, fitness_sum))
-    parent2 = list(select_parent(pool, fitness_sum))
+    parent1 = select_parent(pool, fitness_sum)
+    parent2 = select_parent(pool, fitness_sum)
 
     child1 = list(parent1)
     child2 = list(parent2)
@@ -62,9 +58,11 @@ def cross_parents(pool, fitness_sum, mutation_chance=5):
 def generate_new_pool(pool):
     """Make a new pool from the old one"""
 
-    pool_list = list(pool)
-    fitness_sum = reduce(lambda x, y: x + y, map(lambda x: x[1], pool_list))
-    for i in range(round(len(pool_list) / 2)):
-        child1, child2 = cross_parents(pool_list, fitness_sum)
-        yield child1
-        yield child2
+    fitness_sum = reduce(lambda x, y: x + y, map(lambda x: x[1], pool))
+    result = []
+    for i in range(round(len(pool) / 2)):
+        child1, child2 = cross_parents(pool, fitness_sum)
+        result.append(child1)
+        result.append(child2)
+
+    return result

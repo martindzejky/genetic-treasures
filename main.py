@@ -9,11 +9,13 @@ random.seed()
 start_time = time.time()
 
 main_level = level.generate(10)
-pool = gene.process_pool(gene.generate_pool(), main_level)
+pool = gene.process_pool(gene.generate_pool(128), main_level)
 
-evolve_cycles = 256
+evolve_cycles = 512
 for i in range(evolve_cycles):
     pool = gene.process_pool(gene.generate_new_pool(pool), main_level)
+    if i % 64 == 0:
+        print("~", pool[0][1])
 
 max_fitness = 0
 gene = None
@@ -22,7 +24,7 @@ for gene_fitness in pool:
         max_fitness = gene_fitness[1]
         gene = gene_fitness[0]
 
-print("evolved", 256, "cycles in",
+print("evolved", evolve_cycles, "cycles in",
       round(time.time() - start_time, 2), "seconds")
 print()
 
