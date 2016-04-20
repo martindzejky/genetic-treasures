@@ -32,6 +32,8 @@ def select_parent(population, fitness_sum):
         if fitness_acc > roulette:
             return pair[1]
 
+    return population[0][1]
+
 
 def evolve(population, fitness_sum):
     """Evolve the next generation from the current."""

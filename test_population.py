@@ -23,7 +23,10 @@ class TestPopulation(unittest.TestCase):
         fitness_sum = evolution.count_fitness_sum(scored_pop)
         evolved_pop = population.evolve(scored_pop, fitness_sum)
 
-        self.assertEqual(len(pop), len(evolved_pop))
+        self.assertGreaterEqual(len(evolved_pop), len(pop))
+
+        for inset in evolved_pop:
+            self.assertIsInstance(inset, tuple)
 
 
 if __name__ == "__main__":
