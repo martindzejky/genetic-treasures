@@ -1,5 +1,6 @@
 import time
 import random
+import level
 import evolution
 
 
@@ -8,7 +9,8 @@ print()
 start_time = time.time()
 
 random.seed()
-evolution.run()
+world = level.generate()
+evolution.run(world)
 
 print()
 print("finished in", round(time.time() - start_time, 2), "seconds")
