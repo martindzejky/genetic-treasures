@@ -22,7 +22,7 @@ def run(level, start, generations=500):
 
         if i % 16 == 0:
             print("\b" * 256, end="")
-            print("generation", i, "; average fitness is",
+            print("generation", i, "& average fitness is",
                   fitness_sum / len(scored_pop), end="")
             sys.stdout.flush()
 
