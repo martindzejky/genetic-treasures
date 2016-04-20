@@ -37,4 +37,6 @@ def run(level, start, generations=500):
                   end="")
             sys.stdout.flush()
 
+        pop = population.evolve(scored_pop, fitness_sum)
+
     print()

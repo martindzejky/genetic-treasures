@@ -13,9 +13,9 @@ def score(population, level, start):
     """Assign fitness to every inset in the population."""
 
     return tuple(map(lambda inset: (machine.run_path(
-                                    level,
-                                    machine.interpret_inset(inset),
-                                    start),
+                                        level,
+                                        machine.interpret_inset(inset),
+                                        start),
                                     inset),
                      population
                      ))
