@@ -13,4 +13,6 @@ world = level.generate()
 evolution.run(world, (0, 0))
 
 print()
-print("finished in", round(time.time() - start_time, 2), "seconds")
+print("finished in\033[36m",
+      round(time.time() - start_time, 2),
+      "\033[0mseconds")

@@ -19,11 +19,22 @@ def run(level, start, generations=500):
     for i in range(generations):
         scored_pop = population.score(pop, level, start)
         fitness_sum = count_fitness_sum(scored_pop)
+        fitness_avg = fitness_sum / len(scored_pop)
 
-        if i % 16 == 0:
+        if i % 64 == 0:
+            color = 31
+            if fitness_avg > 3000:
+                color = 32
+            elif fitness_avg > 1100:
+                color = 33
+
             print("\b" * 256, end="")
-            print("generation", i, "& average fitness is",
-                  fitness_sum / len(scored_pop), end="")
+            print("generation\033[36m",
+                  i,
+                  "\033[0m& average fitness is\033[" + str(color) + "m",
+                  fitness_avg,
+                  "\033[0m",
+                  end="")
             sys.stdout.flush()
 
     print()
