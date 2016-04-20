@@ -1,4 +1,4 @@
-def interpret_inset(inset):
+def interpret_inset(inset, max_iterations=500):
     """Run the instructions in a virtual machine and
        return the directions to build a path."""
 
@@ -12,8 +12,30 @@ def interpret_inset(inset):
         else:
             return (0, 1)
 
-    # TODO: run the machine
-    return tuple(map(make_dir, inset))
+    i, counter = 0, 0
+    memory = list(inset)
+    result = []
+
+    while True:
+        byte = memory[i]
+        instruction = byte >> 6
+        rest = byte & int("00111111", 2)
+
+        if instruction == 0:
+            memory[rest] = 0 if memory[rest] >= 255 else memory[rest] + 1
+        elif instruction == 1:
+            memory[rest] = 255 if memory[rest] <= 0 else memory[rest] - 1
+        elif instruction == 2:
+            i = rest
+        elif instruction == 3:
+            result.append(make_dir(memory[rest]))
+
+        i = 0 if i >= len(memory) - 1 else i + 1
+        counter += 1
+        if counter >= max_iterations:
+            break
+
+    return result
 
 
 def run_path(level, path, start):
