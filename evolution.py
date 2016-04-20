@@ -40,3 +40,11 @@ def run(level, start, generations=500):
         pop = population.evolve(scored_pop, fitness_sum)
 
     print()
+    pop = population.score(pop, level, start)
+
+    best_pair = pop[0]
+    for pair in pop:
+        if pair[0] > best_pair[0]:
+            best_pair = pair
+
+    return best_pair

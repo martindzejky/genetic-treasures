@@ -39,3 +39,31 @@ def run_path(level, path, start):
             fitness += 1000
 
     return max(1, fitness)
+
+
+def make_printable_level(level, path, start):
+    """Make a level with the visible path."""
+
+    pos = start
+    level = list(map(lambda x: list(x), level))
+    level[pos[1]][pos[0]] = "S"
+
+    for dir in path:
+        pos = (pos[0] + dir[0], pos[1] + dir[1])
+
+        if pos[1] < 0 or pos[1] >= len(level):
+            break
+        if pos[0] < 0 or pos[0] >= len(level[0]):
+            break
+
+        if level[pos[1]][pos[0]] == 0:
+            if dir == (-1, 0):
+                level[pos[1]][pos[0]] = "<"
+            elif dir == (0, -1):
+                level[pos[1]][pos[0]] = "^"
+            elif dir == (1, 0):
+                level[pos[1]][pos[0]] = ">"
+            else:
+                level[pos[1]][pos[0]] = "v"
+
+    return level
