@@ -46,8 +46,8 @@ def evolve(population, fitness_sum):
 
         child1, child2 = inset.crossover(parent1, parent2)
 
-        evolved.append(child1)
-        evolved.append(child2)
+        evolved.append(inset.mutate(child1))
+        evolved.append(inset.mutate(child2))
 
     while len(evolved) < len(population):
         evolved.append(inset.generate())

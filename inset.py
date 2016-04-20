@@ -12,3 +12,12 @@ def crossover(parent1, parent2):
 
     point = random.randrange(len(parent1))
     return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
+
+
+def mutate(inset, mutation_chance=5):
+    """Mutate an inset."""
+
+    return tuple(i if random.randrange(100) > mutation_chance
+                 else random.randrange(255)
+                 for i
+                 in inset)
