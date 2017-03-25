@@ -3,6 +3,7 @@ import instruction_set
 
 
 class TestInstructionSet(unittest.TestCase):
+
     def test_generate(self):
         self.assertIsInstance(instruction_set.generate(), list)
 
