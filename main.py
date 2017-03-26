@@ -38,8 +38,8 @@ def format_path(path: List[str]) -> str:
     lookup = {
         'U': '^',
         'R': '>',
-        'D': '<',
-        'L': 'v'
+        'D': 'v',
+        'L': '<'
     }
 
     return ''.join(map(lambda d: lookup[d], path))
