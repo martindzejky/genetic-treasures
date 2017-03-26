@@ -27,6 +27,11 @@ def select_parent(population, scores):
 
     fitness_acc = 0
     fitness_sum = sum(scores)
+
+    # if fitness sum is 0, just select a random parent
+    if fitness_sum == 0:
+        return random.choice(population)
+
     roulette = random.randrange(fitness_sum)
 
     for i, inset in enumerate(population):

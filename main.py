@@ -185,6 +185,9 @@ def main():
             except KeyboardInterrupt:
                 break
 
+    # finally, print the level with the path
+    level.print_level_path(generated_level, best_path, args.start)
+
 
 if __name__ == '__main__':
     main()

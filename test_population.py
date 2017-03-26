@@ -40,6 +40,9 @@ class PopulationTestCase(unittest.TestCase):
         for _ in range(10):
             self.assertIn(population.select_parent(pop, scores), pop)
 
+        no_scores = [0, 0, 0, 0, 0, 0]
+        self.assertIn(population.select_parent(pop, scores), pop)
+
     def test_evolve(self):
         level = [
             ['.', '.', '.'],
