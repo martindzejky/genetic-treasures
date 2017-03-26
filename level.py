@@ -1,4 +1,5 @@
 import random
+from termcolor import colored
 
 
 def generate(width=8, height=8, treasure_chance=10):
@@ -50,3 +51,18 @@ def run_path(original_level, path, start=(0, 0)):
             level[pos[1]][pos[0]] = '.'
 
     return collected_treasures, steps_taken
+
+
+def print_level(level):
+    """ Print a level to the console. """
+
+    tile_to_color = {
+        '.': None,
+        'T': 'yellow'
+    }
+
+    for row in level:
+        for tile in row:
+            print(colored(tile, tile_to_color[tile]), '', end='')
+
+        print()
