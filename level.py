@@ -56,12 +56,19 @@ def run_path(original_level, path, start=(0, 0)):
 def print_level(level, start=(0, 0)):
     """ Print a level to the console. """
 
+    # lookup dictionaries
     tile_to_color = {
         '.': None,
         'T': 'yellow',
         'S': 'green'
     }
+    tile_to_desc = {
+        '.': 'empty tile',
+        'T': 'treasure',
+        'S': 'start'
+    }
 
+    # print the level
     for y, row in enumerate(level):
         for x, tile in enumerate(row):
             if start[0] == x and start[1] == y:
@@ -70,3 +77,8 @@ def print_level(level, start=(0, 0)):
                 print(colored(tile, tile_to_color[tile]), '', end='')
 
         print()
+
+    # print legend
+    for tile in tile_to_color:
+        print(colored(tile, tile_to_color[tile]), '=', tile_to_desc[tile], '', end='')
+    print()

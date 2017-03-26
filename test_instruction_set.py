@@ -29,7 +29,7 @@ class TestInstructionSet(unittest.TestCase):
         self.assertEqual(len(children[0]), len(parent1))
         self.assertEqual(len(children[1]), len(parent1))
 
-        for i in range(len(parent1)):
+        for i, _ in enumerate(parent1):
             self.assertTrue(
                 (children[0][i] in parent1 and children[1][i] in parent2) or
                 (children[0][i] in parent2 and children[1][i] in parent1)
@@ -46,12 +46,20 @@ class TestInstructionSet(unittest.TestCase):
         self.assertEqual(inset, instruction_set.mutate_bits(inset, mutation_chance=0))
         self.assertNotEqual(inset, instruction_set.mutate_bits(inset, mutation_chance=100))
 
+        for instruction in instruction_set.mutate_bits(inset):
+            self.assertGreaterEqual(instruction, 0)
+            self.assertLess(instruction, 256)
+
     def test_mutate_bytes(self):
         inset = instruction_set.generate()
 
         self.assertEqual(len(inset), len(instruction_set.mutate_bytes(inset)))
         self.assertEqual(inset, instruction_set.mutate_bytes(inset, mutation_chance=0))
         self.assertNotEqual(inset, instruction_set.mutate_bytes(inset, mutation_chance=100))
+
+        for instruction in instruction_set.mutate_bytes(inset):
+            self.assertGreaterEqual(instruction, 0)
+            self.assertLess(instruction, 256)
 
 
 if __name__ == '__main__':

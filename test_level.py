@@ -1,5 +1,7 @@
 import unittest
 import level
+from unittest.mock import patch, call
+from termcolor import colored
 
 
 class LevelTestCase(unittest.TestCase):
@@ -8,14 +10,16 @@ class LevelTestCase(unittest.TestCase):
         default_level = level.generate()
 
         self.assertEqual(len(default_level), 8)
-        self.assertEqual(len(default_level[0]), 8)
+        for row in default_level:
+            self.assertEqual(len(row), 8)
 
         resized_level = level.generate(10, 5)
 
         self.assertEqual(len(resized_level), 5)
-        self.assertEqual(len(resized_level[0]), 10)
+        for row in resized_level:
+            self.assertEqual(len(row), 10)
 
-        flat_level = sum(level.generate(), [])
+        flat_level = sum(level.generate(treasure_chance=50), [])
 
         self.assertIn('T', flat_level)
 
@@ -34,6 +38,25 @@ class LevelTestCase(unittest.TestCase):
         self.assertEqual(level.run_path(level1, [], (1, 1)), (1, 0))
         self.assertEqual(level.run_path(level2, ['R', 'U']), (1, 2))
         self.assertEqual(level.run_path(level2, ['L', 'U', 'L'], (3, 1)), (2, 3))
+
+    @patch('builtins.print')
+    def test_print_level(self, mock_print):
+        level1 = [
+            ['.', '.', 'T'],
+            ['.', 'T', '.']
+        ]
+
+        level.print_level(level1, (1, 0))
+        mock_print.assert_has_calls([
+            call(colored('.', None), '', end=''),
+            call(colored('S', 'green'), '', end=''),
+            call(colored('T', 'yellow'), '', end=''),
+            call(),
+            call(colored('.', None), '', end=''),
+            call(colored('T', 'yellow'), '', end=''),
+            call(colored('.', None), '', end=''),
+            call()
+        ])
 
 
 if __name__ == '__main__':

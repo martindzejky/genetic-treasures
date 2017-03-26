@@ -12,7 +12,8 @@ class PopulationTestCase(unittest.TestCase):
                 pop = population.generate(pop_size, inset_size)
 
                 self.assertEqual(len(pop), pop_size)
-                self.assertEqual(len(pop[0]), inset_size)
+                for inset in pop:
+                    self.assertEqual(len(inset), inset_size)
 
     def test_score(self):
         pop = [[(3 << 6) + 1, 140], [(3 << 6) + 1, 100]]
@@ -34,6 +35,11 @@ class PopulationTestCase(unittest.TestCase):
         self.assertEqual(population.select_parent(['a', 'b'], [100, 0]), 'a')
         self.assertEqual(population.select_parent(['a', 'b'], [0, 10]), 'b')
 
+        pop = ['a', 'b', 'c', 'd', 'e', 'f']
+        scores = [1, 1, 1, 1, 1, 1]
+        for _ in range(10):
+            self.assertIn(population.select_parent(pop, scores), pop)
+
     def test_evolve(self):
         level = [
             ['.', '.', '.'],
@@ -48,25 +54,6 @@ class PopulationTestCase(unittest.TestCase):
 
         for new_inset in new_population:
             self.assertEqual(len(new_inset), len(original_population[0]))
-
-    def test_evolution_avg_fitness(self):
-        level = [
-            ['.', '.', '.'],
-            ['T', 'T', 'T'],
-            ['.', '.', '.']
-        ]
-
-        current_population = population.generate()
-        original_scores = population.score(current_population, level)
-        original_avg = sum(original_scores) / len(original_scores)
-
-        for _ in range(50):
-            current_scores = population.score(current_population, level)
-            current_population = population.evolve(current_population, current_scores)
-
-        new_scores = population.score(current_population, level)
-        new_avg = sum(new_scores) / len(new_scores)
-        self.assertGreater(new_avg, original_avg)
 
 
 if __name__ == '__main__':
