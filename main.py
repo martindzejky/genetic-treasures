@@ -97,64 +97,93 @@ def main():
     print()
 
     # generate a population
-    print('Generating the initial population of', colored(args.population, 'blue'), 'instructions sets with size',
+    print('Generating the initial population of', colored(args.population, 'blue'), 'instruction sets with size',
           colored(args.instruction_size, 'blue'))
     print()
     current_population = population.generate(args.population, args.instruction_size)
 
-    # run the evolution
-    try:
-        print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
-        for iteration in range(args.number_of_generations):
-            m_f = instruction_set.mutate_bits if args.mutation_function == 'bits' else instruction_set.mutate_bytes
+    generation = 0
 
-            # score the current population and evolve a new one
-            current_scores = population.score(current_population, generated_level, start=args.start,
-                                              max_machine_iterations=args.machine_iterations)
-            current_population = population.evolve(current_population, current_scores, mutation_chance=args.mutation_chance,
-                                                   crossover_take_random=args.crossover_random, mutation_function=m_f)
+    # repeat until all treasures are found or the user stops
+    while True:
 
-            # print progress
-            if iteration % args.print_progress == 0:
-                avg_fitness = sum(current_scores) / len(current_scores)
-                print('\b' * 256, end='')
-                print('Generation number', colored(iteration, 'blue'), 'has average fitness',
-                      fitness_color(avg_fitness, number_of_treasures), 'and the best fitness is',
-                      fitness_color(max(current_scores), number_of_treasures), end='')
-                sys.stdout.flush()
+        # run the evolution
+        try:
+            print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
+            for iteration in range(args.number_of_generations):
+                m_f = instruction_set.mutate_bits if args.mutation_function == 'bits' else instruction_set.mutate_bytes
+
+                # score the current population and evolve a new one
+                current_scores = population.score(current_population, generated_level, start=args.start,
+                                                  max_machine_iterations=args.machine_iterations)
+                current_population = population.evolve(current_population, current_scores,
+                                                       mutation_chance=args.mutation_chance,
+                                                       crossover_take_random=args.crossover_random,
+                                                       mutation_function=m_f)
+
+                # increase generation number
+                generation += 1
+
+                # print progress
+                if iteration % args.print_progress == 0:
+                    avg_fitness = sum(current_scores) / len(current_scores)
+                    print('\b' * 256, end='')
+                    print('Generation number', colored(generation, 'blue'), 'has average fitness',
+                          fitness_color(avg_fitness, number_of_treasures), 'and the best fitness is',
+                          fitness_color(max(current_scores), number_of_treasures), end='')
+                    print(' ' * 16, end='')
+                    sys.stdout.flush()
+
+            print()
+            print(colored('Finished', 'green'), 'the evolution')
+
+        # allow the user to stop the evolution
+        except KeyboardInterrupt:
+            print()
+            print(colored('Stopping', 'red'), 'the evolution')
 
         print()
-        print(colored('Finished', 'green'), 'the evolution')
 
-    # allow the user to stop the evolution
-    except KeyboardInterrupt:
-        print()
-        print(colored('Stopping', 'red'), 'the evolution')
+        # score the final population
+        final_population = current_population
+        final_scores = population.score(final_population, generated_level, start=args.start,
+                                        max_machine_iterations=args.machine_iterations)
 
-    print()
+        # find the best path
+        best_inset = final_population[0]
+        best_score = final_scores[0]
+        for i, inset in enumerate(final_population):
+            if final_scores[i] > best_score:
+                best_score = final_scores[i]
+                best_inset = inset
 
-    # score the final population
-    final_population = current_population
-    final_scores = population.score(final_population, generated_level, start=args.start,
-                                    max_machine_iterations=args.machine_iterations)
+        best_path = machine.interpret(best_inset, max_iterations=args.machine_iterations)
+        collected_treasures, steps_taken = level.run_path(generated_level, best_path, start=args.start)
+        collected_percent = round(collected_treasures / number_of_treasures * 100, 2)
 
-    # find the best path
-    best_inset = final_population[0]
-    best_score = final_scores[0]
-    for i, inset in enumerate(final_population):
-        if final_scores[i] > best_score:
-            best_score = final_scores[i]
-            best_inset = inset
+        # print the path, the fitness, and the treasures taken
+        print('The best instruction set has fitness', fitness_color(best_score, number_of_treasures))
+        print('The generated path is:', colored(format_path(best_path[:steps_taken]), 'cyan'))
+        print('The guy collected', colored(collected_treasures, 'yellow'), 'treasures',
+              '(' + percent_color(collected_percent) + '%)')
 
-    best_path = machine.interpret(best_inset, max_iterations=args.machine_iterations)
-    collected_treasures, steps_taken = level.run_path(generated_level, best_path, start=args.start)
-    collected_percent = round(collected_treasures / number_of_treasures * 100, 2)
+        # check if all treasures are collected
+        if collected_treasures == number_of_treasures:
+            break
+        else:
+            # offer to continue or stop evolving
+            try:
+                print()
+                answer = input('The best path does not yet collect all treasures, do you want to keep running?'
+                               ' [' + colored('y', 'green') + '/' + colored('N', 'red') + '] ')
+                print()
 
-    # print the path, the fitness, and the treasures taken
-    print('The best instruction set has fitness', fitness_color(best_score, number_of_treasures))
-    print('The generated path is:', colored(format_path(best_path[:steps_taken]), 'cyan'))
-    print('The guy collected', colored(collected_treasures, 'yellow'), 'treasures',
-          '(' + percent_color(collected_percent) + '%)')
+                if answer != 'y' and answer != 'Y':
+                    break
+
+            # interrupt can also be used as a no
+            except KeyboardInterrupt:
+                break
 
 
 if __name__ == '__main__':
