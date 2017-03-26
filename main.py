@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from typing import List
 from termcolor import colored
 import sys
 import level
@@ -7,7 +8,7 @@ import machine
 import instruction_set
 
 
-def fitness_color(fitness, number_of_treasures: int):
+def fitness_color(fitness: float, number_of_treasures: int) -> str:
     """ Generate a proper color for a fitness for printing. """
 
     color = 'red'
@@ -19,7 +20,7 @@ def fitness_color(fitness, number_of_treasures: int):
     return colored(fitness, color)
 
 
-def percent_color(percentage):
+def percent_color(percentage: float) -> str:
     """ Generate a proper color for a percentage for printing. """
 
     color = 'red'
@@ -29,6 +30,19 @@ def percent_color(percentage):
         color = 'green'
 
     return colored(percentage, color)
+
+
+def format_path(path: List[str]) -> str:
+    """ Nicely format a path. """
+
+    lookup = {
+        'U': '^',
+        'R': '>',
+        'D': '<',
+        'L': 'v'
+    }
+
+    return ''.join(map(lambda d: lookup[d], path))
 
 
 def main():
@@ -109,13 +123,14 @@ def main():
                       fitness_color(max(current_scores), number_of_treasures), end='')
                 sys.stdout.flush()
 
+        print()
+        print(colored('Finished', 'green'), 'the evolution')
+
     # allow the user to stop the evolution
     except KeyboardInterrupt:
         print()
         print(colored('Stopping', 'red'), 'the evolution')
 
-    print()
-    print(colored('Finished', 'green'), 'the evolution')
     print()
 
     # score the final population
@@ -137,8 +152,7 @@ def main():
 
     # print the path, the fitness, and the treasures taken
     print('The best instruction set has fitness', fitness_color(best_score, number_of_treasures))
-    print('The generated path is: ', end='')
-    print(best_path[:steps_taken])
+    print('The generated path is:', colored(format_path(best_path[:steps_taken]), 'cyan'))
     print('The guy collected', colored(collected_treasures, 'yellow'), 'treasures',
           '(' + percent_color(collected_percent) + '%)')
 
