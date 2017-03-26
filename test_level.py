@@ -30,10 +30,10 @@ class LevelTestCase(unittest.TestCase):
             ['.', '.', 'T', '.']
         ]
 
-        self.assertEqual(level.run_path(level1, ['R', 'D', 'D']), 2)
-        self.assertEqual(level.run_path(level1, [], (1, 1)), 1)
-        self.assertEqual(level.run_path(level2, ['R', 'U']), 1)
-        self.assertEqual(level.run_path(level2, ['L', 'U', 'L'], (3, 1)), 2)
+        self.assertEqual(level.run_path(level1, ['R', 'D', 'D']), (2, 3))
+        self.assertEqual(level.run_path(level1, [], (1, 1)), (1, 0))
+        self.assertEqual(level.run_path(level2, ['R', 'U']), (1, 2))
+        self.assertEqual(level.run_path(level2, ['L', 'U', 'L'], (3, 1)), (2, 3))
 
 
 if __name__ == '__main__':

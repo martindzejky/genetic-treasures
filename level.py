@@ -11,7 +11,7 @@ def generate(width=8, height=8, treasure_chance=10):
 
 def run_path(original_level, path, start=(0, 0)):
     """ Run the path in a level and return the number
-        of collected treasures. """
+        of collected treasures and the number of steps taken. """
 
     # dictionary with mappings between direction chars and tuples
     char_to_dir = {
@@ -22,6 +22,7 @@ def run_path(original_level, path, start=(0, 0)):
     }
 
     collected_treasures = 0
+    steps_taken = 0
 
     # make copies
     pos = tuple(start)
@@ -35,6 +36,7 @@ def run_path(original_level, path, start=(0, 0)):
     for direction in path:
         # move according to the direction
         pos = (pos[0] + char_to_dir[direction][0], pos[1] + char_to_dir[direction][1])
+        steps_taken += 1
 
         # if out of level, stop
         if pos[0] < 0 or pos[0] >= len(level[0]):
@@ -47,4 +49,4 @@ def run_path(original_level, path, start=(0, 0)):
             collected_treasures += 1
             level[pos[1]][pos[0]] = '.'
 
-    return collected_treasures
+    return collected_treasures, steps_taken

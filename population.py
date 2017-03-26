@@ -15,9 +15,9 @@ def score(population, generated_level, start=(0, 0), max_machine_iterations=500)
 
     def score_instruction_set(inset):
         path = machine.interpret(inset, max_machine_iterations)
-        found_treasures = level.run_path(generated_level, path, start)
+        found_treasures, steps_taken = level.run_path(generated_level, path, start)
 
-        return max(0, found_treasures * 1000 - len(path))
+        return max(0, found_treasures * 1000 - steps_taken)
 
     return [score_instruction_set(inset) for inset in population]
 
