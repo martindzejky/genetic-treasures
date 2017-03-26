@@ -75,7 +75,7 @@ def main():
           colored(args.treasure_chance, 'yellow'))
 
     generated_level = level.generate(args.width, args.height, args.treasure_chance)
-    level.print_level(generated_level)
+    level.print_level(generated_level, args.start)
 
     # count the number of treasures
     number_of_treasures = sum(generated_level, []).count('T')

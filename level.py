@@ -53,16 +53,20 @@ def run_path(original_level, path, start=(0, 0)):
     return collected_treasures, steps_taken
 
 
-def print_level(level):
+def print_level(level, start=(0, 0)):
     """ Print a level to the console. """
 
     tile_to_color = {
         '.': None,
-        'T': 'yellow'
+        'T': 'yellow',
+        'S': 'green'
     }
 
-    for row in level:
-        for tile in row:
-            print(colored(tile, tile_to_color[tile]), '', end='')
+    for y, row in enumerate(level):
+        for x, tile in enumerate(row):
+            if start[0] == x and start[1] == y:
+                print(colored('S', tile_to_color['S']), '', end='')
+            else:
+                print(colored(tile, tile_to_color[tile]), '', end='')
 
         print()
