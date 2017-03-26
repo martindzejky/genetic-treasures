@@ -119,7 +119,7 @@ def print_level_path(original_level, path, start=(0, 0)):
 
     for direction in path:
         # mark the path to the level
-        tile = level[pos[1]][pos[0]]
+        tile = original_level[pos[1]][pos[0]]
         if pos[0] == start[0] and pos[1] == start[1]:
             level[pos[1]][pos[0]] = colored(char_to_print[direction], 'green')
         elif tile == 'T':
