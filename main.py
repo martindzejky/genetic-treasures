@@ -78,7 +78,7 @@ def main():
     parser.add_argument('-cr', '--crossover-random', action='store_true',
                         help='if specified, the crossover takes each byte randomly from either parent,'
                              ' instead of taking continuous parts from both parents (default: %(default)s)')
-    parser.add_argument('-mf', '--mutation-function', choices=['bit', 'byte'], default='bit',
+    parser.add_argument('-mf', '--mutation-function', choices=['bit', 'byte', 'both'], default='bit',
                         help='mutation function to use - either mutate just bits or the whole bytes'
                              ' (choices: %(choices)s) (default: %(default)s)')
 
@@ -104,6 +104,13 @@ def main():
 
     generation = 0
 
+    # lookup for mutation function
+    mf = {
+        'bit': instruction_set.mutate_bits,
+        'bytes': instruction_set.mutate_bytes,
+        'both': instruction_set.mutate_combined
+    }
+
     # repeat until all treasures are found or the user stops
     while True:
 
@@ -111,15 +118,13 @@ def main():
         try:
             print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
             for iteration in range(args.number_of_generations):
-                m_f = instruction_set.mutate_bits if args.mutation_function == 'bits' else instruction_set.mutate_bytes
-
                 # score the current population and evolve a new one
                 current_scores = population.score(current_population, generated_level, start=args.start,
                                                   max_machine_iterations=args.machine_iterations)
                 current_population = population.evolve(current_population, current_scores,
                                                        mutation_chance=args.mutation_chance,
                                                        crossover_take_random=args.crossover_random,
-                                                       mutation_function=m_f)
+                                                       mutation_function=mf[args.mutation_function])
 
                 # increase generation number
                 generation += 1
@@ -183,6 +188,7 @@ def main():
 
             # interrupt can also be used as a no
             except KeyboardInterrupt:
+                print()
                 break
 
     # finally, print the level with the path

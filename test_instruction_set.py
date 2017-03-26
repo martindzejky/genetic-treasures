@@ -61,6 +61,15 @@ class TestInstructionSet(unittest.TestCase):
             self.assertGreaterEqual(instruction, 0)
             self.assertLess(instruction, 256)
 
+    def test_mutate_combined(self):
+        inset = instruction_set.generate()
+
+        self.assertEqual(len(inset), len(instruction_set.mutate_combined(inset)))
+
+        for instruction in instruction_set.mutate_combined(inset):
+            self.assertGreaterEqual(instruction, 0)
+            self.assertLess(instruction, 256)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -45,3 +45,9 @@ def mutate_bytes(inset, mutation_chance=2):
     """ Mutate the instruction set by changing whole bytes. """
 
     return [random.randrange(256) if random.randrange(100) < mutation_chance else i for i in inset]
+
+
+def mutate_combined(inset, mutation_chance=5):
+    """ Apply mutation for bits and bytes simultaneously. """
+
+    return mutate_bits(mutate_bytes(inset, round(mutation_chance / 4)), mutation_chance)
