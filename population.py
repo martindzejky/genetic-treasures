@@ -46,8 +46,8 @@ def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mu
     # sort the population based on the scores
     sorted_population = sorted(scored_population, key=lambda i: i[1])
 
-    # take the best half
-    half_point = round(len(sorted_population) / 2)
+    # take the best half (correction: third)
+    half_point = round(len(sorted_population) / 3 * 2)
     best_half = sorted_population[half_point:]
 
     # split again to population and score
