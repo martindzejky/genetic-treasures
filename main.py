@@ -89,25 +89,33 @@ def main():
     current_population = population.generate(args.population, args.instruction_size)
 
     # run the evolution
-    print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
-    for iteration in range(args.number_of_generations):
-        m_f = instruction_set.mutate_bits if args.mutation_function == 'bits' else instruction_set.mutate_bytes
+    try:
+        print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
+        for iteration in range(args.number_of_generations):
+            m_f = instruction_set.mutate_bits if args.mutation_function == 'bits' else instruction_set.mutate_bytes
 
-        # score the current population and evolve a new one
-        current_scores = population.score(current_population, generated_level, start=args.start,
-                                          max_machine_iterations=args.machine_iterations)
-        current_population = population.evolve(current_population, current_scores, mutation_chance=args.mutation_chance,
-                                               crossover_take_random=args.crossover_random, mutation_function=m_f)
+            # score the current population and evolve a new one
+            current_scores = population.score(current_population, generated_level, start=args.start,
+                                              max_machine_iterations=args.machine_iterations)
+            current_population = population.evolve(current_population, current_scores, mutation_chance=args.mutation_chance,
+                                                   crossover_take_random=args.crossover_random, mutation_function=m_f)
 
-        # print progress
-        if iteration % args.print_progress == 0:
-            avg_fitness = sum(current_scores) / len(current_scores)
-            print('\b' * 256, end='')
-            print('Generation number', colored(iteration, 'blue'), 'has average fitness',
-                  fitness_color(avg_fitness, number_of_treasures), 'and the best fitness is',
-                  fitness_color(max(current_scores), number_of_treasures), end='')
-            sys.stdout.flush()
+            # print progress
+            if iteration % args.print_progress == 0:
+                avg_fitness = sum(current_scores) / len(current_scores)
+                print('\b' * 256, end='')
+                print('Generation number', colored(iteration, 'blue'), 'has average fitness',
+                      fitness_color(avg_fitness, number_of_treasures), 'and the best fitness is',
+                      fitness_color(max(current_scores), number_of_treasures), end='')
+                sys.stdout.flush()
 
+    # allow the user to stop the evolution
+    except KeyboardInterrupt:
+        print()
+        print(colored('Stopping', 'red'), 'the evolution')
+
+    print()
+    print(colored('Finished', 'green'), 'the evolution')
     print()
 
     # score the final population
