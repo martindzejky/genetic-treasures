@@ -48,13 +48,13 @@ class LevelTestCase(unittest.TestCase):
 
         level.print_level(level1, (1, 0))
         mock_print.assert_has_calls([
-            call(colored('.', None), '', end=''),
+            call(colored('.', 'grey'), '', end=''),
             call(colored('S', 'green'), '', end=''),
             call(colored('T', 'yellow'), '', end=''),
             call(),
-            call(colored('.', None), '', end=''),
+            call(colored('.', 'grey'), '', end=''),
             call(colored('T', 'yellow'), '', end=''),
-            call(colored('.', None), '', end=''),
+            call(colored('.', 'grey'), '', end=''),
             call()
         ])
 

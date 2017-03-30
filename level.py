@@ -59,7 +59,7 @@ def print_level(level, start=(0, 0)):
 
     # lookup dictionaries
     tile_to_color = {
-        '.': None,
+        '.': 'grey',
         'T': 'yellow',
         'S': 'green'
     }

@@ -100,9 +100,14 @@ def main():
     print('Generating the initial population of', colored(args.population, 'blue'), 'instruction sets with size',
           colored(args.instruction_size, 'blue'))
     print()
+
     current_population = population.generate(args.population, args.instruction_size)
+    current_scores = population.score(current_population, generated_level, start=args.start,
+                                      max_machine_iterations=args.machine_iterations)
 
     generation = 0
+    best_inset = current_population[0]
+    best_score = 0
 
     # lookup for mutation function
     mf = {
@@ -118,13 +123,13 @@ def main():
         try:
             print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
             for iteration in range(args.number_of_generations):
-                # score the current population and evolve a new one
-                current_scores = population.score(current_population, generated_level, start=args.start,
-                                                  max_machine_iterations=args.machine_iterations)
+                # evolve and score a new population
                 current_population = population.evolve(current_population, current_scores,
                                                        mutation_chance=args.mutation_chance,
                                                        crossover_take_random=args.crossover_random,
                                                        mutation_function=mf[args.mutation_function])
+                current_scores = population.score(current_population, generated_level, start=args.start,
+                                                  max_machine_iterations=args.machine_iterations)
 
                 # increase generation number
                 generation += 1
@@ -139,6 +144,12 @@ def main():
                     print(' ' * 16, end='')
                     sys.stdout.flush()
 
+                # find the best path
+                for i, inset in enumerate(current_population):
+                    if current_scores[i] > best_score:
+                        best_score = current_scores[i]
+                        best_inset = inset
+
             print()
             print(colored('Finished', 'green'), 'the evolution')
 
@@ -148,19 +159,6 @@ def main():
             print(colored('Stopping', 'red'), 'the evolution')
 
         print()
-
-        # score the final population
-        final_population = current_population
-        final_scores = population.score(final_population, generated_level, start=args.start,
-                                        max_machine_iterations=args.machine_iterations)
-
-        # find the best path
-        best_inset = final_population[0]
-        best_score = final_scores[0]
-        for i, inset in enumerate(final_population):
-            if final_scores[i] > best_score:
-                best_score = final_scores[i]
-                best_inset = inset
 
         best_path = machine.interpret(best_inset, max_iterations=args.machine_iterations)
         collected_treasures, steps_taken = level.run_path(generated_level, best_path, start=args.start)
