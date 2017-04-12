@@ -22,7 +22,7 @@ def score(population, generated_level, start=(0, 0), max_machine_iterations=500)
     return [score_instruction_set(inset) for inset in population]
 
 
-def select_parent(population, scores):
+def select_parent_roulette(population, scores):
     """ Select a parent using the roulette. """
 
     fitness_acc = 0
@@ -42,7 +42,18 @@ def select_parent(population, scores):
     return population[0]
 
 
-def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mutation_chance=5, crossover_take_random=False):
+def select_parent_tournament(population, scores):
+    """ Select a parent using the tournament. """
+
+    # choose 4 random insets
+    chosen = random.choices(list(enumerate(population)), k=4)
+    best = max(chosen, key=lambda c: scores[c[0]])
+
+    return best[1]
+
+
+def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mutation_chance=5,
+           crossover_take_random=False, parent_selection=select_parent_roulette):
     """ Evolve the next population from the current one. """
 
     # join the population with the scores
@@ -63,8 +74,8 @@ def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mu
 
     # produce offspring of the best parents in the population
     for _ in best_half:
-        parent1 = select_parent(best_half_population, best_half_scores)
-        parent2 = select_parent(best_half_population, best_half_scores)
+        parent1 = parent_selection(best_half_population, best_half_scores)
+        parent2 = parent_selection(best_half_population, best_half_scores)
 
         child1, child2 = instruction_set.crossover(parent1, parent2, crossover_take_random)
 

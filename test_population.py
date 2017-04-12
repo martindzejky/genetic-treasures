@@ -32,16 +32,16 @@ class PopulationTestCase(unittest.TestCase):
         )
 
     def test_select_parent(self):
-        self.assertEqual(population.select_parent(['a', 'b'], [100, 0]), 'a')
-        self.assertEqual(population.select_parent(['a', 'b'], [0, 10]), 'b')
+        self.assertEqual(population.select_parent_roulette(['a', 'b'], [100, 0]), 'a')
+        self.assertEqual(population.select_parent_roulette(['a', 'b'], [0, 10]), 'b')
 
         pop = ['a', 'b', 'c', 'd', 'e', 'f']
         scores = [1, 1, 1, 1, 1, 1]
         for _ in range(10):
-            self.assertIn(population.select_parent(pop, scores), pop)
+            self.assertIn(population.select_parent_roulette(pop, scores), pop)
 
         no_scores = [0, 0, 0, 0, 0, 0]
-        self.assertIn(population.select_parent(pop, scores), pop)
+        self.assertIn(population.select_parent_roulette(pop, scores), pop)
 
     def test_evolve(self):
         level = [

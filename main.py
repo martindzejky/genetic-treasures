@@ -81,6 +81,9 @@ def main():
     parser.add_argument('-mf', '--mutation-function', choices=['bit', 'byte', 'both'], default='bit',
                         help='mutation function to use - either mutate just bits or the whole bytes'
                              ' (choices: %(choices)s) (default: %(default)s)')
+    parser.add_argument('-sf', '--selection-function', choices=['roulette', 'tournament'], default='roulette',
+                        help='selection function to use'
+                             ' (choices: %(choices)s) (default: %(default)s)')
 
     args = parser.parse_args()
 
@@ -124,10 +127,13 @@ def main():
             print('Running the evolution for', colored(args.number_of_generations, 'blue'), 'generations')
             for iteration in range(args.number_of_generations):
                 # evolve and score a new population
-                current_population = population.evolve(current_population, current_scores,
-                                                       mutation_chance=args.mutation_chance,
-                                                       crossover_take_random=args.crossover_random,
-                                                       mutation_function=mf[args.mutation_function])
+                current_population = population \
+                    .evolve(current_population, current_scores,
+                            mutation_chance=args.mutation_chance,
+                            crossover_take_random=args.crossover_random,
+                            mutation_function=mf[args.mutation_function],
+                            parent_selection=population.select_parent_roulette if args.selection_function == 'roulette'
+                            else population.select_parent_tournament)
                 current_scores = population.score(current_population, generated_level, start=args.start,
                                                   max_machine_iterations=args.machine_iterations)
 
