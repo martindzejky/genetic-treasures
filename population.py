@@ -62,8 +62,8 @@ def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mu
     # sort the population based on the scores
     sorted_population = sorted(scored_population, key=lambda i: i[1])
 
-    # take the best half (correction: third)
-    half_point = round(len(sorted_population) / 3 * 2)
+    # take the best half (correction: best 90%)
+    half_point = round(len(sorted_population) / 10)
     best_half = sorted_population[half_point:]
 
     # split again to population and score
@@ -73,7 +73,7 @@ def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mu
     new_generation = []
 
     # produce offspring of the best parents in the population
-    for _ in best_half:
+    for _ in range(int((len(sorted_population) - half_point) / 2)):
         parent1 = parent_selection(best_half_population, best_half_scores)
         parent2 = parent_selection(best_half_population, best_half_scores)
 
@@ -83,6 +83,9 @@ def evolve(population, scores, mutation_function=instruction_set.mutate_bits, mu
         new_generation.append(mutation_function(child1, mutation_chance))
         new_generation.append(mutation_function(child2, mutation_chance))
 
+    # append one random instruction set
+    new_generation.append(instruction_set.generate(len(new_generation[0])))
+
     # add random instruction sets and return the new population
-    random_to_add = len(population) - len(new_generation)
-    return new_generation + [instruction_set.generate(len(new_generation[0])) for _ in range(random_to_add)]
+    best_to_add = len(sorted_population) - len(new_generation)
+    return new_generation + [best_half_population[-i - 1] for i in range(best_to_add)]
